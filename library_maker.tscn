@@ -1,0 +1,74 @@
+[gd_scene load_steps=8 format=3 uid="uid://b1gdrh7knb7rc"]
+
+[ext_resource type="PackedScene" uid="uid://ksk3sf4sbowp" path="res://things.blend" id="1_ge114"]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_17854"]
+points = PackedVector3Array(-0.729475, 0.116829, 0.663315, -0.729475, 0.336642, 0.583193, -0.897855, 0.116829, 0.663315, -0.729475, -0.117093, 0.663315, -0.729448, -0.336906, 0.583193, -0.897855, 0.336642, 0.583193, -0.729475, 0.515841, 0.432817, -1, 0.0867646, 0.492292, -0.897855, -0.117093, 0.663315, -1, 0.249877, 0.432947, -0.897855, -0.336906, 0.583193, -0.729448, -0.515973, 0.432817, -0.729448, -0.632934, 0.230238, -0.729475, 0.515841, -0.433076, -0.729475, 0.632802, -0.230498, -0.729475, 0.673548, -0.0001297, -0.729475, 0.632802, 0.230238, -0.897855, 0.515841, 0.432817, -1, -0.0868967, 0.492292, -1, -0.250009, 0.432947, -1, 0.382925, 0.321269, -1, -0.383057, 0.321269, -0.897855, -0.515973, 0.432817, -0.897855, -0.632934, 0.230238, -0.729475, -0.673548, -0.0001297, -0.729475, -0.632934, -0.230498, -0.729475, -0.515973, -0.433076, -0.729475, -0.336906, -0.583322, -0.729475, -0.117093, -0.663315, -0.729475, 0.116829, -0.663315, -0.729475, 0.336642, -0.583322, -0.897855, 0.515841, -0.433076, -0.897855, 0.632802, -0.230498, -0.897855, 0.673548, -0.0001297, -0.897855, 0.632802, 0.230238, -1, 0.469822, 0.170893, -1, -0.469954, 0.170893, -0.897855, -0.673548, -0.0001297, -1, -0.50015, -0.0001297, -0.897855, -0.632934, -0.230498, -0.897855, -0.515973, -0.433076, -0.897855, -0.336906, -0.583322, -0.897855, -0.117093, -0.663315, -0.897855, 0.116829, -0.663315, -0.897855, 0.336642, -0.583322, -1, 0.469822, -0.171153, -1, 0.382925, -0.321528, -1, 0.499886, -0.0001297, -1, -0.469954, -0.171153, -1, -0.383057, -0.321528, -1, -0.250009, -0.433076, -1, -0.0868967, -0.492551, -1, 0.0867646, -0.492551, -1, 0.249877, -0.433076)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_ijl5u"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_pak7t"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_22hhr"]
+height = 1.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_qjybk"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_js6lv"]
+height = 0.6
+
+[node name="things" instance=ExtResource("1_ge114")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="end" index="0"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="end/StaticBody3D" index="0"]
+shape = SubResource("ConvexPolygonShape3D_17854")
+disabled = true
+
+[node name="StaticBody3D" type="StaticBody3D" parent="straight" index="0"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="straight/StaticBody3D" index="0"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("CylinderShape3D_ijl5u")
+disabled = true
+
+[node name="StaticBody3D" type="StaticBody3D" parent="bi" index="0"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="bi/StaticBody3D" index="0"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("CylinderShape3D_pak7t")
+disabled = true
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="bi/StaticBody3D" index="1"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0.5)
+shape = SubResource("CylinderShape3D_22hhr")
+disabled = true
+
+[node name="StaticBody3D" type="StaticBody3D" parent="ace" index="0"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ace/StaticBody3D" index="0"]
+shape = SubResource("SphereShape3D_qjybk")
+disabled = true
+
+[node name="StaticBody3D" type="StaticBody3D" parent="gay" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00119114, -0.00601339, 0.00541973)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="gay/StaticBody3D" index="0"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0.7, 0, 0)
+shape = SubResource("CylinderShape3D_js6lv")
+disabled = true
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="gay/StaticBody3D" index="1"]
+transform = Transform3D(-3.78552e-08, 0.866025, 0.5, -1, -4.37114e-08, 0, 2.18557e-08, -0.5, 0.866025, 0.333, 0, 0.133)
+shape = SubResource("CylinderShape3D_js6lv")
+disabled = true
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="gay/StaticBody3D" index="2"]
+transform = Transform3D(-2.18557e-08, -0.5, 0.866025, 1, -4.37114e-08, 0, 3.78552e-08, 0.866025, 0.5, 0.133, 0, 0.333)
+shape = SubResource("CylinderShape3D_js6lv")
+disabled = true
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="gay/StaticBody3D" index="3"]
+transform = Transform3D(1.91069e-15, -4.37114e-08, 1, -1, -4.37114e-08, 0, 4.37114e-08, -1, -4.37114e-08, 0, 0, 0.7)
+shape = SubResource("CylinderShape3D_js6lv")
+disabled = true

@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://bexph3ihiwfa4"]
+
+[ext_resource type="MeshLibrary" uid="uid://bntnsmigfu7kl" path="res://library.tres" id="1_fnw5n"]
+[ext_resource type="Script" path="res://scripts/GridScript.gd" id="2_60vra"]
+[ext_resource type="PackedScene" uid="uid://ng2vtnj0sau5" path="res://ground.blend" id="3_fqth2"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_53h3g"]
+size = Vector3(20, 1, 20)
+
+[node name="1" type="GridMap"]
+mesh_library = ExtResource("1_fnw5n")
+script = ExtResource("2_60vra")
+metadata/_editor_floor_ = Vector3(0, 0, 0)
+
+[node name="ground" parent="." instance=ExtResource("3_fqth2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.91782, -0.135027, 9.99552)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="ground"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ground/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("BoxShape3D_53h3g")
