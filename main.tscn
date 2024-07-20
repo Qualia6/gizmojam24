@@ -1,8 +1,8 @@
 [gd_scene load_steps=13 format=3 uid="uid://bnapxx2qd8dpu"]
 
 [ext_resource type="Script" path="res://scripts/Camera3DRaycast.gd" id="1_mh6lp"]
+[ext_resource type="Script" path="res://main.gd" id="1_pfgsa"]
 [ext_resource type="Script" path="res://scripts/GridsMover.gd" id="2_dnmq8"]
-[ext_resource type="PackedScene" uid="uid://bexph3ihiwfa4" path="res://grid.tscn" id="2_tb23a"]
 [ext_resource type="PackedScene" uid="uid://ctawanrj6ctl1" path="res://selector.blend" id="5_ldmuq"]
 [ext_resource type="Script" path="res://scripts/selector.gd" id="6_2kr1a"]
 [ext_resource type="AudioStream" uid="uid://c5gauq0rtas5g" path="res://sounds/hit0.wav" id="6_5h7wa"]
@@ -30,82 +30,66 @@ stream_5/weight = 1.0
 
 [node name="Root" type="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0289803, -0.11311, 0.0166359)
-
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.707107, 0.353553, -0.612373, 0, 0.866026, 0.5, 0.707107, -0.353553, 0.612373, -10.473, 19.593, 29.759)
-projection = 1
-size = 25.839
-script = ExtResource("1_mh6lp")
+script = ExtResource("1_pfgsa")
 
 [node name="Grids" type="Node3D" parent="."]
 script = ExtResource("2_dnmq8")
 
-[node name="0" parent="Grids" instance=ExtResource("2_tb23a")]
-
-[node name="1" parent="Grids" instance=ExtResource("2_tb23a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20, 0)
-
-[node name="2" parent="Grids" instance=ExtResource("2_tb23a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 23, 0)
-
-[node name="3" parent="Grids" instance=ExtResource("2_tb23a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 26, 0)
-
 [node name="lights" type="Node" parent="."]
 
 [node name="DirectionalLight3D2" type="DirectionalLight3D" parent="lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.4686, -0.11311, -0.82694)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.0524, -0.11311, -0.82694)
 light_color = Color(1, 0.538616, 0.708084, 1)
-light_energy = 0.4
+light_energy = 0.3
 shadow_enabled = true
 shadow_opacity = 0.95
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="lights"]
-transform = Transform3D(0.600582, 0.743871, 0.293186, 0.162784, -0.472759, 0.866026, 0.782817, -0.472393, -0.405021, 25.4874, -0.11311, -1.45612)
+transform = Transform3D(0.600582, 0.74387, 0.293186, 0.162784, -0.472759, 0.866026, 0.782817, -0.472393, -0.405021, -28.0336, -0.11311, -1.45612)
 light_color = Color(0.644375, 0.736789, 0.414118, 1)
-light_energy = 0.4
+light_energy = 0.3
 shadow_enabled = true
 shadow_opacity = 0.95
 
 [node name="DirectionalLight3D5" type="DirectionalLight3D" parent="lights"]
-transform = Transform3D(0.301242, 0.945899, -0.120534, -0.35218, 0.227836, 0.907777, 0.886128, -0.231011, 0.401761, 22.5756, 0.149569, -0.942911)
+transform = Transform3D(0.301242, 0.945899, -0.120534, -0.35218, 0.227836, 0.907778, 0.886128, -0.231011, 0.40176, -30.9454, 0.149569, -0.942911)
 light_color = Color(0.477381, 0.787837, 0.866659, 1)
-light_energy = 0.4
+light_energy = 0.3
 shadow_enabled = true
 shadow_opacity = 0.95
 
 [node name="DirectionalLight3D3" type="DirectionalLight3D" parent="lights"]
-transform = Transform3D(-0.510962, -0.60693, 0.608732, 0.802334, -0.0825792, 0.591135, -0.308509, 0.790454, 0.529155, 23.1819, -0.11311, -12.2038)
+transform = Transform3D(-0.510962, -0.60693, 0.608732, 0.802334, -0.0825792, 0.591135, -0.308509, 0.790454, 0.529155, -30.3391, -0.11311, -12.2038)
 light_color = Color(0.866323, 0.695207, 0.243233, 1)
-light_energy = 0.4
+light_energy = 0.3
 shadow_enabled = true
 shadow_opacity = 0.95
 
 [node name="DirectionalLight3D6" type="DirectionalLight3D" parent="lights"]
-transform = Transform3D(0.726577, -0.341437, -0.596244, 0.342679, 0.932232, -0.116254, 0.595532, -0.119853, 0.794341, 27.6649, 0.101689, -2.62804)
+transform = Transform3D(0.726577, -0.341437, -0.596245, 0.342679, 0.932232, -0.116254, 0.595532, -0.119853, 0.794341, -25.8561, 0.101689, -2.62804)
 light_color = Color(1, 0.637881, 0.484619, 1)
-light_energy = 0.4
+light_energy = 0.3
 shadow_enabled = true
 shadow_opacity = 0.95
 
 [node name="DirectionalLight3D7" type="DirectionalLight3D" parent="lights"]
-transform = Transform3D(-0.10369, 0.792937, 0.600417, 0.991888, 0.127064, 0.00349059, -0.0735234, 0.595908, -0.79968, 26.0333, 0.00182724, 1.60291)
+transform = Transform3D(-0.10369, 0.792937, 0.600416, 0.991888, 0.127064, 0.00349028, -0.0735234, 0.595908, -0.79968, -27.4877, 0.00182724, 1.60291)
 light_color = Color(0.618992, 0.703612, 1, 1)
-light_energy = 0.4
+light_energy = 0.3
 shadow_enabled = true
 shadow_opacity = 0.95
 
 [node name="DirectionalLight3D8" type="DirectionalLight3D" parent="lights"]
-transform = Transform3D(0.622642, 0.540571, -0.565774, 0.770661, -0.298288, 0.563121, 0.135644, -0.786643, -0.602324, 25.9755, 0.0472174, -4.06308)
+transform = Transform3D(0.622642, 0.540571, -0.565774, 0.770661, -0.298288, 0.563122, 0.135644, -0.786643, -0.602323, -27.5455, 0.0472174, -4.06308)
 light_color = Color(0.8476, 0.633197, 0.971399, 1)
-light_energy = 0.4
+light_energy = 0.3
 shadow_enabled = true
 shadow_opacity = 0.95
 
 [node name="DirectionalLight3D4" type="DirectionalLight3D" parent="lights"]
-transform = Transform3D(-0.929119, 0.188455, 0.318155, 0.348726, 0.732732, 0.584375, -0.122994, 0.653903, -0.746514, 23.751, -0.0839672, -9.50584)
+transform = Transform3D(-0.929119, 0.188455, 0.318155, 0.348726, 0.732732, 0.584375, -0.122994, 0.653903, -0.746514, -29.77, -0.0839672, -9.50584)
 light_color = Color(0.413096, 0.823102, 0.728515, 1)
-light_energy = 0.4
+light_energy = 0.3
 shadow_enabled = true
 shadow_opacity = 0.95
 
@@ -117,3 +101,9 @@ script = ExtResource("6_2kr1a")
 stream = SubResource("AudioStreamRandomizer_7krq2")
 volume_db = -9.811
 max_polyphony = 2
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.707107, 0.353553, -0.612373, 0, 0.866026, 0.499999, 0.707107, -0.353553, 0.612373, -3.69945, 19.593, 35.803)
+projection = 1
+size = 25.839
+script = ExtResource("1_mh6lp")

@@ -33,6 +33,14 @@ let displayChangedQueue = new Uint32Array(16) // 16 is random choice - will be d
 // if needed i can add a dontDisplayQueue to only add things to the queue at most once. rn performance it doesn't seem worth the effort to add it
 let displayQueuePosition = 0
 
+window.Simulation = {
+	display: display,
+	displayChangedQueue:displayChangedQueue,
+	x_size:x_size,
+	y_size:y_size,
+	z_size:z_size
+}
+
 // this manages the queue
 // dontQueue is just bit for every cell in the world - if its high then its already queued (ensures that something can only be queued once)
 // updateQueued is an array of all the cells that need updates. The most significant 2 bits represent the direction that the update came from (0-up, 1-right, 2-down, 3-left)
@@ -913,10 +921,6 @@ T Y -Z
 */
 
 
-for (let i=0; i<display.length; i++) {
-	display[i] = createDisplay(0,0,0,Math.floor(Math.random()*5+1))
-}
-
 
 
 
@@ -1039,4 +1043,3 @@ for (let i=0; i<display.length; i++) {
 // 	}
 
 // }
-
