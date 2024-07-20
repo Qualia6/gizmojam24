@@ -1,1 +1,36 @@
-<svg height="128" width="128" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="124" height="124" rx="14" fill="#363d52" stroke="#212532" stroke-width="4"/><g transform="scale(.101) translate(122 122)"><g fill="#fff"><path d="M105 673v33q407 354 814 0v-33z"/><path d="m105 673 152 14q12 1 15 14l4 67 132 10 8-61q2-11 15-15h162q13 4 15 15l8 61 132-10 4-67q3-13 15-14l152-14V427q30-39 56-81-35-59-83-108-43 20-82 47-40-37-88-64 7-51 8-102-59-28-123-42-26 43-46 89-49-7-98 0-20-46-46-89-64 14-123 42 1 51 8 102-48 27-88 64-39-27-82-47-48 49-83 108 26 42 56 81zm0 33v39c0 276 813 276 814 0v-39l-134 12-5 69q-2 10-14 13l-162 11q-12 0-16-11l-10-65H446l-10 65q-4 11-16 11l-162-11q-12-3-14-13l-5-69z" fill="#478cbf"/><path d="M483 600c0 34 58 34 58 0v-86c0-34-58-34-58 0z"/><circle cx="725" cy="526" r="90"/><circle cx="299" cy="526" r="90"/></g><g fill="#414042"><circle cx="307" cy="532" r="60"/><circle cx="717" cy="532" r="60"/></g></g></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="33.477551mm"
+   height="33.866684mm"
+   viewBox="0 0 33.477551 33.866684"
+   version="1.1"
+   id="svg1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <g
+     id="layer1"
+     transform="translate(-92.466395,-6.8736871)">
+    <path
+       d="m 125.85712,24.968208 a 8.4589014,11.683166 0 0 1 -8.4031,10.798824 8.4589014,11.683166 0 0 1 -8.30957,-9.625252 8.4401207,8.2891579 0 0 1 -0.24185,-0.129708 8.4589014,13.51753 0 0 1 -8.36641,11.589473 8.4589014,13.51753 0 0 1 -8.069797,-9.505879 9.2637186,13.195867 0 0 0 9.195307,11.963094 9.2637186,13.195867 0 0 0 6.94324,-4.502568 9.7900677,14.169731 0 0 0 7.5489,5.18418 9.7900677,14.169731 0 0 0 9.7901,-14.169678 9.7900677,14.169731 0 0 0 -0.0868,-1.602486 z"
+       style="stroke-width:2.75159;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+       id="path31" />
+    <ellipse
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.75159;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+       id="path25"
+       cx="116.38374"
+       cy="13.965211"
+       rx="3.1580861"
+       ry="5.4536428" />
+    <ellipse
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.75159;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+       id="path24"
+       cx="101.4595"
+       cy="12.570796"
+       rx="3.5089848"
+       ry="5.6971087" />
+  </g>
+</svg>

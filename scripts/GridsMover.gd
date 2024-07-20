@@ -1,6 +1,6 @@
 extends Node3D
 
-var grids = 1
+var grids = 4
 const ideal_height = 0
 const padding_spacing = 4 # when forces against eachother start
 const acounted_spacing = 3 # how much space it should hav in the end
@@ -64,6 +64,7 @@ func _process(delta):
 			var v2 = grid.get_velocity()
 			grid_below.set_velocity(min(v,v2))
 			grid.set_velocity(max(v,v2))
+			get_node("../ScrollSound").play()
 		
 		if spacing_above < blocked_spacing and i != grids - 1:
 			#grid.position.y = top - blocked_spacing
@@ -72,9 +73,12 @@ func _process(delta):
 			var v2 = grid.get_velocity()
 			grid_above.set_velocity(max(v,v2))
 			grid.set_velocity(min(v,v2))
+			get_node("../ScrollSound").play()
 
 func _input(event):
 	if event.is_action_pressed("scroll_up") and selected + 1 < grids:
 		selected+=1
+		#get_node("../ScrollSound").play()
 	elif event.is_action_pressed("scroll_down") and selected > 0:
 		selected-=1
+		#get_node("../ScrollSound").play()

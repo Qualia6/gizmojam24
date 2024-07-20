@@ -50,9 +50,8 @@ func set_goal(position: Result):
 			
 		if previous.is_err() or previous.unwrap() != tile:
 			if Input.is_action_pressed("mb_left"):
-				var considered = Vector3i(tile.x, 0, tile.z)
-				grid.modify(considered, previous)
-				previous = Result.ok(considered)
+				grid.modify(tile, previous)
+				previous = Result.ok(tile)
 			else:
 				if previous.is_ok():
 					previous = Result.error(0)

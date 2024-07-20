@@ -1,11 +1,28 @@
-[gd_scene load_steps=5 format=3 uid="uid://bexph3ihiwfa4"]
+[gd_scene load_steps=11 format=3 uid="uid://bexph3ihiwfa4"]
 
 [ext_resource type="MeshLibrary" uid="uid://bntnsmigfu7kl" path="res://library.tres" id="1_fnw5n"]
 [ext_resource type="Script" path="res://scripts/GridScript.gd" id="2_60vra"]
 [ext_resource type="PackedScene" uid="uid://ng2vtnj0sau5" path="res://ground.blend" id="3_fqth2"]
+[ext_resource type="AudioStream" uid="uid://bg13c737s4kuv" path="res://sounds/pipe0.wav" id="4_7d3nf"]
+[ext_resource type="AudioStream" uid="uid://68b72m2aj123" path="res://sounds/pipe1.wav" id="5_whocc"]
+[ext_resource type="AudioStream" uid="uid://dk8y8srlf0eau" path="res://sounds/pipe2.wav" id="6_b8fry"]
+[ext_resource type="AudioStream" uid="uid://cf3d4ykpr3cpv" path="res://sounds/pipe3.wav" id="7_mauvb"]
+[ext_resource type="AudioStream" uid="uid://clcloe3osipht" path="res://sounds/wind.wav" id="8_qu624"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_53h3g"]
 size = Vector3(20, 1, 20)
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_y1uqk"]
+random_pitch = 1.05
+streams_count = 4
+stream_0/stream = ExtResource("4_7d3nf")
+stream_0/weight = 1.0
+stream_1/stream = ExtResource("5_whocc")
+stream_1/weight = 1.0
+stream_2/stream = ExtResource("6_b8fry")
+stream_2/weight = 1.0
+stream_3/stream = ExtResource("7_mauvb")
+stream_3/weight = 1.0
 
 [node name="1" type="GridMap"]
 mesh_library = ExtResource("1_fnw5n")
@@ -20,3 +37,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.91782, -0.135027, 9.99552)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ground/StaticBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 shape = SubResource("BoxShape3D_53h3g")
+
+[node name="PipeSound" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamRandomizer_y1uqk")
+max_polyphony = 2
+
+[node name="WindSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_qu624")
+volume_db = -15.453

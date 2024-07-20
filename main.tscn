@@ -1,12 +1,34 @@
-[gd_scene load_steps=6 format=3 uid="uid://bnapxx2qd8dpu"]
+[gd_scene load_steps=13 format=3 uid="uid://bnapxx2qd8dpu"]
 
 [ext_resource type="Script" path="res://scripts/Camera3DRaycast.gd" id="1_mh6lp"]
 [ext_resource type="Script" path="res://scripts/GridsMover.gd" id="2_dnmq8"]
 [ext_resource type="PackedScene" uid="uid://bexph3ihiwfa4" path="res://grid.tscn" id="2_tb23a"]
 [ext_resource type="PackedScene" uid="uid://ctawanrj6ctl1" path="res://selector.blend" id="5_ldmuq"]
 [ext_resource type="Script" path="res://scripts/selector.gd" id="6_2kr1a"]
+[ext_resource type="AudioStream" uid="uid://c5gauq0rtas5g" path="res://sounds/hit0.wav" id="6_5h7wa"]
+[ext_resource type="AudioStream" uid="uid://camw3msujmtsb" path="res://sounds/hit1.wav" id="7_3hfii"]
+[ext_resource type="AudioStream" uid="uid://bspg1dg0snh2s" path="res://sounds/hit2.wav" id="8_dxg4q"]
+[ext_resource type="AudioStream" uid="uid://darb1cidcjga1" path="res://sounds/hit3.wav" id="9_j0qio"]
+[ext_resource type="AudioStream" uid="uid://htrprtdxoqqs" path="res://sounds/hit4.wav" id="10_jlmv6"]
+[ext_resource type="AudioStream" uid="uid://de7kw1cqg3e3o" path="res://sounds/hit5.wav" id="11_fsuej"]
 
-[node name="Node3D" type="Node3D"]
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_7krq2"]
+random_pitch = 1.16
+streams_count = 6
+stream_0/stream = ExtResource("6_5h7wa")
+stream_0/weight = 1.0
+stream_1/stream = ExtResource("7_3hfii")
+stream_1/weight = 1.0
+stream_2/stream = ExtResource("8_dxg4q")
+stream_2/weight = 1.0
+stream_3/stream = ExtResource("9_j0qio")
+stream_3/weight = 1.0
+stream_4/stream = ExtResource("10_jlmv6")
+stream_4/weight = 1.0
+stream_5/stream = ExtResource("11_fsuej")
+stream_5/weight = 1.0
+
+[node name="Root" type="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0289803, -0.11311, 0.0166359)
 
 [node name="Camera3D" type="Camera3D" parent="."]
@@ -21,13 +43,13 @@ script = ExtResource("2_dnmq8")
 [node name="0" parent="Grids" instance=ExtResource("2_tb23a")]
 
 [node name="1" parent="Grids" instance=ExtResource("2_tb23a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20, 0)
 
 [node name="2" parent="Grids" instance=ExtResource("2_tb23a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 23, 0)
 
 [node name="3" parent="Grids" instance=ExtResource("2_tb23a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 26, 0)
 
 [node name="lights" type="Node" parent="."]
 
@@ -53,7 +75,7 @@ shadow_enabled = true
 shadow_opacity = 0.95
 
 [node name="DirectionalLight3D3" type="DirectionalLight3D" parent="lights"]
-transform = Transform3D(-0.510962, -0.60693, 0.608732, 0.270542, -0.785711, -0.556296, 0.81592, -0.119558, 0.565668, 23.1819, -0.11311, -3.52324)
+transform = Transform3D(-0.510962, -0.60693, 0.608732, 0.802334, -0.0825792, 0.591135, -0.308509, 0.790454, 0.529155, 23.1819, -0.11311, -12.2038)
 light_color = Color(0.866323, 0.695207, 0.243233, 1)
 light_energy = 0.4
 shadow_enabled = true
@@ -81,7 +103,7 @@ shadow_enabled = true
 shadow_opacity = 0.95
 
 [node name="DirectionalLight3D4" type="DirectionalLight3D" parent="lights"]
-transform = Transform3D(-0.929119, 0.188454, 0.318154, -0.179693, 0.521867, -0.833886, -0.323184, -0.83195, -0.451012, 23.751, -0.0839672, 1.32344)
+transform = Transform3D(-0.929119, 0.188455, 0.318155, 0.348726, 0.732732, 0.584375, -0.122994, 0.653903, -0.746514, 23.751, -0.0839672, -9.50584)
 light_color = Color(0.413096, 0.823102, 0.728515, 1)
 light_energy = 0.4
 shadow_enabled = true
@@ -90,3 +112,8 @@ shadow_opacity = 0.95
 [node name="selector" parent="." instance=ExtResource("5_ldmuq")]
 transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 5.68302, 0.11311, -4.98854)
 script = ExtResource("6_2kr1a")
+
+[node name="ScrollSound" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamRandomizer_7krq2")
+volume_db = -9.811
+max_polyphony = 2
