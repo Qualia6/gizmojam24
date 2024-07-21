@@ -29,24 +29,16 @@ const data1 = new Uint16Array(everythingSaveable, size * (4 + 1 + 1), size)
 const tags = new Uint32Array(size)
 
 const display = new Uint16Array(size) // 6 most significant bits are the orientation
-let displayChangedQueue = new Uint32Array(16) // 16 is random choice - will be dynamically made larger when needed
+let displayChangedQueue = new Uint32Array(size) // 16 is random choice - will be dynamically made larger when needed
 // if needed i can add a dontDisplayQueue to only add things to the queue at most once. rn performance it doesn't seem worth the effort to add it
 let displayQueuePosition = 0
-
-window.Simulation = {
-	display: display,
-	displayChangedQueue:displayChangedQueue,
-	x_size:x_size,
-	y_size:y_size,
-	z_size:z_size
-}
 
 // this manages the queue
 // dontQueue is just bit for every cell in the world - if its high then its already queued (ensures that something can only be queued once)
 // updateQueued is an array of all the cells that need updates. The most significant 2 bits represent the direction that the update came from (0-up, 1-right, 2-down, 3-left)
 // queue position is the index in the queue where the next thing should be added at.
 //every tick, the queue is processed - but if new things are added to it during that time they will not be (and will be moved to the front queue for the next tick)
-let updateQueued = new Uint32Array(16) // 16 is random choice - will be dynamically made larger when needed
+let updateQueued = new Uint32Array(size) // 16 was random choice  (i hcanged it to size cause idk if the dyncamic stuff is gonna work) - will be dynamically made larger when needed
 const dontQueue = new DataView(new ArrayBuffer(size >> 3)) // because 8 bits a byte, 2^3=8 so size>>3 bytes has size bits
 let queuePosition = 0
 
@@ -71,13 +63,19 @@ test 3d temperature
 
 integration:
 - trigger level load
-- display all
+- display all DONE!
 - tick
 - display changes
 - select tool
 - use tool
 */
 
+
+function updateAll() {
+	for (let i=0; i<display.length; i++) {
+		updateDisplay(i)
+	}
+}
 
 function saveToBase64() {
 	const binaryString = String.fromCharCode.apply(null, new Uint8Array(everythingSaveable));
@@ -92,6 +90,7 @@ function loadFromBase64(base64) {
 	for (let i = 0; i < len; i++) {
 		view[i] = binaryString.charCodeAt(i);
 	}
+	updateAll()
 }
 
 function getQueuedByte(i) {
@@ -124,7 +123,7 @@ function hasFlag(i, flag) {
 }
 
 function changeBlock(i, whatNewType, updateEvenIfSameType, evenIfInvalid, dontSendUpdates, dontSendGraphicsUpdates) {
-	if (types[i] != i || updateEvenIfSameType) {
+	if (types[i] != whatNewType || updateEvenIfSameType) {
 		let previousType = types[i]
 		let valid = true
 		if (hasFlag(i, DECONSTRUCTOR_FLAG)) {
@@ -343,20 +342,32 @@ const flags = []
 const deconstructorCallbacks = []
 
 function updateDisplay(i) {
-	let newValue = displayCallbacks[types[i]](i)
-	if (newValue === display[i]) return
-	display[i] = newValue
-
+	// let newValue = displayCallbacks[types[i]](i)
+	// if (newValue === display[i]) return
 	try {
-		displayChangedQueue[displayQueuePosition] = i;
-	} catch (e) { // if updateQueued is toooo smalll - make it bigger
-		let newDisplayChangedQueue = new Int32Array(displayChangedQueue.length * 2);
-		newDisplayChangedQueue.set(displayChangedQueue);
-		displayChangedQueue = newDisplayChangedQueue
-		displayChangedQueue[displayQueuePosition] = i
+		display[i] =  displayCallbacks[types[i]](i)
+	} catch (e) {
+		// console.warn(e)
+		// console.log("lmao")
 	}
 
-	displayQueuePosition++;
+	// try {
+	// 	displayChangedQueue[displayQueuePosition] = i;
+	// } catch (e) { // if updateQueued is toooo smalll - make it bigger
+	// 	let newDisplayChangedQueue = new Int32Array(displayChangedQueue.length * 2);
+	// 	newDisplayChangedQueue.set(displayChangedQueue);
+	// 	displayChangedQueue = newDisplayChangedQueue
+	// 	displayChangedQueue[displayQueuePosition] = i
+	// }
+
+	// displayQueuePosition++;
+}
+
+
+function displayAll() {
+	for (let i = 0; i < display.length; i++) {
+		display[i] = displayCallbacks[types[i]]
+	}
 }
 
 function createDisplay(y, x, z, index) {
@@ -476,7 +487,7 @@ function preformUpdate(queueIndex) {
 	writeFalseQueued(i, byte) // remove queue mark (important top do this first so that anything else that triggers this to be updated again puts it in the queue to be updated again - next tick)
 
 	if (hasFlag(i, UPDATE_FLAG)) { // incase the block changed since it got queued
-		console.log(i, types[i])
+		// console.log(i, types[i])
 		updateCallbacks[types[i]](i, direction)
 	}
 }
@@ -542,109 +553,89 @@ function loadLevel(id) {
 }
 
 function tick() {
-	displayQueuePosition = 0
+	// displayQueuePosition = 0
 	// spread(temperatures)
+
 	tickCells()
-	fulfillUpdateQueue()
-	return tickLevel()
+
+	// fulfillUpdateQueue()
+	// return tickLevel()
 }
 
-let selectedTool = -1
+let selectedTool = 2
 let availableTools = [] // which tool ids te user has access to
 const tools = []
 
-function inputMouseDown(input) {
-	return input & 1
+function getTool() {
+	return availableTools[selectedTool]
 }
 
-function inputMouseDownPrevious(input) {
-	return input & 2
-}
-
-function inputMouseTriggered(input) {
-	return inputMouseDown(input) && !inputMouseDownPrevious(input)
-}
-
-function inputMouseReleased(input) {
-	return !inputMouseDown(input) && inputMouseDownPrevious(input)
-}
-
-function inputKeyDown(input) {
-	return input & 3
-}
-
-function inputKeyDownPrevious(input) {
-	return input & 4
-}
-
-function inputKeyTriggered(input) {
-	return inputKeyDown(input) && !inputKeyDownPrevious(input)
-}
-
-function inputKeyReleased(input) {
-	return !inputKeyDown(input) && inputKeyDownPrevious(input)
+function tickTool(actual_mouse,actual_key,actual_key2, i) {
+	getTool()._tick(actual_mouse, actual_key, actual_key2, i)
 }
 
 class Tool {
 	constructor() {
-		self.mouse = false
-		self.key = false
-		self.key2 = false
-		self.prev_mouse = false
-		self.prev_key = false
-		self.prev_key2 = false
-		self.prevI = -1
+		this.mouse = false
+		this.key = false
+		this.key2 = false
+		this.prev_mouse = false
+		this.prev_key = false
+		this.prev_key2 = false
+		this.prevI = -1
 	}
 	get mousePressed() {
-		return self.mouse && !self.prev_mouse
+		return this.mouse && !this.prev_mouse
 	}
 
 	get mouseReleased() {
-		return !self.mouse && self.prev_mouse
+		return !this.mouse && this.prev_mouse
 	}
 
 	get keyPressed() {
-		return self.key && !self.prev_key
+		return this.key && !this.prev_key
 	}
 
 	get keyReleased() {
-		return !self.key && self.prev_key
+		return !this.key && this.prev_key
 	}
 
 	get key2Pressed() {
-		return self.key2 && !self.prev_key2
+		return this.key2 && !this.prev_key2
 	}
 
 	get key2Released() {
-		return !self.key2 && self.prev_key2
+		return !this.key2 && this.prev_key2
 	}
 
 	get moved() {
-		return self.i != self.prevI
+		return this.i != this.prevI
 	}
 
 	_tick(actual_mouse, actual_key, actual_key2, i) {
-		self.mouse = actual_mouse
-		self.key = actual_key
-		self.key2 = actual_key2
-		self.i = i
+		this.mouse = actual_mouse
+		this.key = actual_key
+		this.key2 = actual_key2
+		this.i = i
 		if (i == -1) {
-			self.mouse = false
-			self.key = false
-			self.key2 = false
+			this.mouse = false
+			this.key = false
+			this.key2 = false
 		}
-		self.tick()
-		if (i != self.prevI) {
-			self.prevI = i
+		this.tick()
+		if (i != this.prevI) {
+			this.prevI = i
 		}
 
-		self.prev_mouse = mouse
-		self.prev_key = key
-		self.prev_key2 = key2
+		this.prev_mouse = this.mouse
+		this.prev_key = this.key
+		this.prev_key2 = this.key2
 	}
 
 	getName() { return "unnamed tool" }
-	tick() { }
+	tick() {
+		// console.log("meow")
+	}
 }
 
 function createLevel(data, tick, title, instructions) {
@@ -753,127 +744,167 @@ implement tick()
 class CopyPasteTool extends Tool {
 	constructor() {
 		super()
-		self.picked_type = 0
-		self.picked_data0 = 0
+		this.picked_type = 0
+		this.picked_data0 = 0
 	}
 	getName() { return "Copy Paste Tool" }
 	tick() {
-		if (self.keyPressed) {
-			self.picked_type = types[self.i]
-			self.picked_data0 = data0[self.i]
-		} else if (self.mouse || self.mouseReleased) {
-			types[self.i] = self.picked_type
-			data0[self.i] = self.picked_data0
-			updateDisplay(self.i)
+		if (this.keyPressed) {
+			this.picked_type = types[this.i]
+			this.picked_data0 = data0[this.i]
+		} else if (this.mouse || this.mouseReleased) {
+			types[this.i] = this.picked_type
+			data0[this.i] = this.picked_data0
+			updateDisplay(this.i)
 		}
 	}
 }
+availableTools.push(new CopyPasteTool())
 
 class ChangeTypeTool extends Tool {
 	constructor() {
 		super()
-		self.part = 0
+		this.part = 0
 	}
 	getName() { return "Change Type" }
 	getArrayConsidered() {
-		switch (self.part) {
+		switch (this.part) {
 			case 0:
 				return types
 			case 1:
 				return data0
-			case 2:
-				return data1
 		}
 	}
 	tick() {
-		if (self.key2Pressed) {
-			self.part = (self.part + 1) % 3
-		}
-		if (self.mousePressed) {
-			if (self.key) {
-				self.getArrayConsidered()[self.i]++
+		// if (this.key2Pressed) {
+		// 	this.part = (this.part + 1) % 2
+			
+		// console.log(this.part)
+		// }
+		if (this.mousePressed) {
+			if (this.key) {
+				this.getArrayConsidered()[this.i]++
 			} else {
-				self.getArrayConsidered()[self.i]--
+				this.getArrayConsidered()[this.i]--
 			}
+			updateDisplay(this.i)
+			// console.log(this.getArrayConsidered()[this.i])
+			// console.log(this.i)
 		}
 	}
 }
+availableTools.push(new ChangeTypeTool())
+class SandTool extends Tool {
+	getName() { return "Sand" }
+	tick() {
+		if (this.mousePressed) {
+			console.log(this.i)
+			changeBlock(this.i,2)
+		}
+	}
+}
+
+availableTools.push(new SandTool())
 
 class PipeTool extends Tool {
 	getName() { return "Pipe" }
 	tick() { } // TODO
 }
 
-createType(0,
-	i => 0
-) // does nothing
-
-
-const PIPE_EDGE_PX = createDisplay(0,0,0,3)
-const PIPE_EDGE_PZ = createDisplay(0,0,0,3)
-const PIPE_EDGE_PY = createDisplay(0,0,0,3)
-const PIPE_EDGE_NX = createDisplay(0,0,0,3)
-const PIPE_EDGE_NZ = createDisplay(0,0,0,3)
-const PIPE_EDGE_NY = createDisplay(0,0,0,3)
-const PIPE_STRAI_X = createDisplay(0,0,0,5)
-const PIPE_STRAI_Z = createDisplay(0,0,0,5)
-const PIPE_STRAI_Y = createDisplay(0,0,0,5)
-const PIPE_B_PX_PZ = createDisplay(0,0,0,4)
-const PIPE_B_NX_NZ = createDisplay(0,0,0,4)
-const PIPE_B_NX_PZ = createDisplay(0,0,0,4)
-const PIPE_B_PX_NZ = createDisplay(0,0,0,4)
-const PIPE_B_PX_PY = createDisplay(0,0,0,4)
-const PIPE_B_PZ_PY = createDisplay(0,0,0,4)
-const PIPE_B_NX_PY = createDisplay(0,0,0,4)
-const PIPE_B_NZ_PY = createDisplay(0,0,0,4)
-const PIPE_B_PX_NY = createDisplay(0,0,0,4)
-const PIPE_B_PZ_NY = createDisplay(0,0,0,4)
-const PIPE_B_NX_NY = createDisplay(0,0,0,4)
-const PIPE_B_NZ_NY = createDisplay(0,0,0,4)
-const PIPE_TJ_X_PZ = createDisplay(0,0,0,2)
-const PIPE_TJ_Z_NX = createDisplay(0,0,0,2)
-const PIPE_TJ_X_NZ = createDisplay(0,0,0,2)
-const PIPE_TJ_Z_PX = createDisplay(0,0,0,2)
-const PIPE_TJ_X_PY = createDisplay(0,0,0,2)
-const PIPE_TJ_X_NY = createDisplay(0,0,0,2)
-const PIPE_TJ_Z_PY = createDisplay(0,0,0,2)
-const PIPE_TJ_Z_NY = createDisplay(0,0,0,2)
-const PIPE_TJ_Y_PX = createDisplay(0,0,0,2)
-const PIPE_TJ_Y_PZ = createDisplay(0,0,0,2)
-const PIPE_TJ_Y_NX = createDisplay(0,0,0,2)
-const PIPE_TJ_Y_NZ = createDisplay(0,0,0,2)
-const PIPE_INVALID = createDisplay(0,0,0,1)
-const PIPE_DISPLAZ_ARRAZ = new Uint8Array([
-	//            +X            -X            +X -X
-	PIPE_INVALID, PIPE_EDGE_PX, PIPE_EDGE_NX, PIPE_STRAI_X, //
-	PIPE_EDGE_PZ, PIPE_B_PX_PZ, PIPE_B_NX_PZ, PIPE_TJ_X_PZ, // +Z
-	PIPE_EDGE_NZ, PIPE_B_PX_NZ, PIPE_B_NX_NZ, PIPE_TJ_X_NZ, // -Z
-	PIPE_STRAI_Z, PIPE_TJ_Z_PX, PIPE_TJ_Z_NX, PIPE_INVALID, // +Z -Z
-	PIPE_EDGE_PY, PIPE_B_PX_PY, PIPE_B_NX_PY, PIPE_TJ_X_PY, // +Y
-	PIPE_B_PZ_PY, PIPE_INVALID, PIPE_INVALID, PIPE_INVALID, // +Z +Y
-	PIPE_B_NZ_PY, PIPE_INVALID, PIPE_INVALID, PIPE_INVALID, // -Z +Y
-	PIPE_TJ_Z_PY, PIPE_INVALID, PIPE_INVALID, PIPE_INVALID, // +Z -Z +Y
-	PIPE_EDGE_NY, PIPE_B_PX_NY, PIPE_B_NX_NY, PIPE_TJ_X_NY, // -Y
-	PIPE_B_PZ_NY, PIPE_INVALID, PIPE_INVALID, PIPE_INVALID, // +Z -Y
-	PIPE_B_NZ_NY, PIPE_INVALID, PIPE_INVALID, PIPE_INVALID, // -Z -Y
-	PIPE_TJ_Z_NY, PIPE_INVALID, PIPE_INVALID, PIPE_INVALID, // +Z -Z -Y
-	PIPE_STRAI_Y, PIPE_TJ_Y_PX, PIPE_TJ_Y_NX, PIPE_INVALID, // +Y -Y
-	PIPE_TJ_Y_PZ, PIPE_INVALID, PIPE_INVALID, PIPE_INVALID, // +Z +Y -Y
-	PIPE_TJ_Y_NZ, PIPE_INVALID, PIPE_INVALID, PIPE_INVALID, // -Z +Y -Y
-	PIPE_INVALID, PIPE_INVALID, PIPE_INVALID, PIPE_INVALID, // +Z -Z +Y -Y
-])
-createType(10,//pipe
-	i => { PIPE_DISPLAZ_ARRAZ[data0[i]] },
+createType(0,// air nothing
+	i => data0[i],
 	i => {
-		data0[i] = 0 // shape
-		data1[i] = 0 // fluid
-	},
-	false,
-	i => {
-
-	},
-	false
+		data0[i] = 0
+	}
+) 
+createType(1, // stone
+	i=> 6
 )
+createType(2, // sand
+	i=> 6,
+	false,
+	false,
+	i=>{
+		if (isNotNegYEdge(i) && types[moveNegY(i)] == 0) {
+			changeBlock(moveNegY(i), 2)
+			changeBlock(i,1)
+		}
+	}
+)
+createType(3, // water
+	i=> 12 // 10 8 9 7
+)
+createType(4, // fire
+	i=> 4 // 16
+)
+createType(5, //branch
+	i=>14 //node: 14 tube: 12 tip: 13 leaf: 15
+)
+
+// const PIPE_EDGE_PX = createDisplay(0, 0, 0, 3)
+// const PIPE_EDGE_PZ = createDisplay(0, 0, 0, 3)
+// const PIPE_EDGE_PY = createDisplay(0, 0, 0, 3)
+// const PIPE_EDGE_NX = createDisplay(0, 0, 0, 3)
+// const PIPE_EDGE_NZ = createDisplay(0, 0, 0, 3)
+// const PIPE_EDGE_NY = createDisplay(0, 0, 0, 3)
+// const PIPE_STRAI_X = createDisplay(0, 0, 0, 5)
+// const PIPE_STRAI_Z = createDisplay(0, 0, 0, 5)
+// const PIPE_STRAI_Y = createDisplay(0, 0, 0, 5)
+// const PIPE_B_PX_PZ = createDisplay(0, 0, 0, 4)
+// const PIPE_B_NX_NZ = createDisplay(0, 0, 0, 4)
+// const PIPE_B_NX_PZ = createDisplay(0, 0, 0, 4)
+// const PIPE_B_PX_NZ = createDisplay(0, 0, 0, 4)
+// const PIPE_B_PX_PY = createDisplay(0, 0, 0, 4)
+// const PIPE_B_PZ_PY = createDisplay(0, 0, 0, 4)
+// const PIPE_B_NX_PY = createDisplay(0, 0, 0, 4)
+// const PIPE_B_NZ_PY = createDisplay(0, 0, 0, 4)
+// const PIPE_B_PX_NY = createDisplay(0, 0, 0, 4)
+// const PIPE_B_PZ_NY = createDisplay(0, 0, 0, 4)
+// const PIPE_B_NX_NY = createDisplay(0, 0, 0, 4)
+// const PIPE_B_NZ_NY = createDisplay(0, 0, 0, 4)
+// const PIPE_TJ_X_PZ = createDisplay(0, 0, 0, 2)
+// const PIPE_TJ_Z_NX = createDisplay(0, 0, 0, 2)
+// const PIPE_TJ_X_NZ = createDisplay(0, 0, 0, 2)
+// const PIPE_TJ_Z_PX = createDisplay(0, 0, 0, 2)
+// const PIPE_TJ_X_PY = createDisplay(0, 0, 0, 2)
+// const PIPE_TJ_X_NY = createDisplay(0, 0, 0, 2)
+// const PIPE_TJ_Z_PY = createDisplay(0, 0, 0, 2)
+// const PIPE_TJ_Z_NY = createDisplay(0, 0, 0, 2)
+// const PIPE_TJ_Y_PX = createDisplay(0, 0, 0, 2)
+// const PIPE_TJ_Y_PZ = createDisplay(0, 0, 0, 2)
+// const PIPE_TJ_Y_NX = createDisplay(0, 0, 0, 2)
+// const PIPE_TJ_Y_NZ = createDisplay(0, 0, 0, 2)
+// const PIPE_INVALID = createDisplay(0, 0, 0, 1)
+// const PIPE_DISPLAZ_ARRAY = new Uint8Array([
+// 	//            +X            -X            +X -X
+// 	PIPE_INVALID, PIPE_EDGE_PX, PIPE_EDGE_NX, PIPE_STRAI_X, //
+// 	PIPE_EDGE_PZ, PIPE_B_PX_PZ, PIPE_B_NX_PZ, PIPE_TJ_X_PZ, // +Z
+// 	PIPE_EDGE_NZ, PIPE_B_PX_NZ, PIPE_B_NX_NZ, PIPE_TJ_X_NZ, // -Z
+// 	PIPE_STRAI_Z, PIPE_TJ_Z_PX, PIPE_TJ_Z_NX, PIPE_INVALID, // +Z -Z
+// 	PIPE_EDGE_PY, PIPE_B_PX_PY, PIPE_B_NX_PY, PIPE_TJ_X_PY, // +Y
+// 	PIPE_B_PZ_PY, PIPE_INVALID, PIPE_INVALID, PIPE_INVALID, // +Z +Y
+// 	PIPE_B_NZ_PY, PIPE_INVALID, PIPE_INVALID, PIPE_INVALID, // -Z +Y
+// 	PIPE_TJ_Z_PY, PIPE_INVALID, PIPE_INVALID, PIPE_INVALID, // +Z -Z +Y
+// 	PIPE_EDGE_NY, PIPE_B_PX_NY, PIPE_B_NX_NY, PIPE_TJ_X_NY, // -Y
+// 	PIPE_B_PZ_NY, PIPE_INVALID, PIPE_INVALID, PIPE_INVALID, // +Z -Y
+// 	PIPE_B_NZ_NY, PIPE_INVALID, PIPE_INVALID, PIPE_INVALID, // -Z -Y
+// 	PIPE_TJ_Z_NY, PIPE_INVALID, PIPE_INVALID, PIPE_INVALID, // +Z -Z -Y
+// 	PIPE_STRAI_Y, PIPE_TJ_Y_PX, PIPE_TJ_Y_NX, PIPE_INVALID, // +Y -Y
+// 	PIPE_TJ_Y_PZ, PIPE_INVALID, PIPE_INVALID, PIPE_INVALID, // +Z +Y -Y
+// 	PIPE_TJ_Y_NZ, PIPE_INVALID, PIPE_INVALID, PIPE_INVALID, // -Z +Y -Y
+// 	PIPE_INVALID, PIPE_INVALID, PIPE_INVALID, PIPE_INVALID, // +Z -Z +Y -Y
+// ])
+// createType(1,//pipe
+// 	i => { return PIPE_DISPLAZ_ARRAY[data0[i]] },
+// 	i => {
+// 		data0[i] = 0 // shape
+// 		data1[i] = 0 // fluid
+// 		return true
+// 	},
+// 	false,
+// 	false,
+// 	false
+// )
 
 /*
 bits:
@@ -919,9 +950,6 @@ T Y Z
 T Y -X
 T Y -Z
 */
-
-
-
 
 
 
@@ -1043,3 +1071,49 @@ T Y -Z
 // 	}
 
 // }
+
+
+window.Simulation = {
+	x_size: () => x_size,
+	y_size: () => y_size,
+	z_size: () => z_size,
+	tick,
+	displayQueuePosition: () => displayQueuePosition,
+	// randomize: () => { for (let i = 0; i < display.length; i++) display[i] = Math.floor(Math.random()*5+1) },
+	blocks: () => { for (let i = 0; i < types.length; i++) changeBlock(i,1) },
+	// coupleDisplayUpdates: () => {
+	// 	updateDisplay(0)
+	// 	updateDisplay(2)
+	// 	updateDisplay(5)
+	// 	updateDisplay(10)
+	// 	updateDisplay(20)
+	// 	updateDisplay(50)
+	// 	updateDisplay(100)
+	// 	updateDisplay(200)
+	// },
+	flat_size_power: () => flat_size_power,
+	x_size_power: () => x_size_power,
+	z_size_power: () => z_size_power,
+	y_size_power: () => y_size_power,
+	y_bit_mask: () => y_bit_mask,
+	z_bit_mask: () => z_bit_mask,
+	x_bit_mask: () => x_bit_mask,
+	changeBlock,
+	// t: () => displayQueuePosition++,
+	hasFlag,
+	tickTool,
+	getPosition,
+	updateDisplay,
+	updateAll,
+	saveToBase64,
+	loadFromBase64,
+	getTool,
+	tickCells
+}
+
+
+// window.availableTools = availableTools
+window.displayChangedQueue = displayChangedQueue
+window.display = display
+window.types = types
+window.flags = flags

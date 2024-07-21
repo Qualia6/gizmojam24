@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bnapxx2qd8dpu"]
+[gd_scene load_steps=18 format=3 uid="uid://bnapxx2qd8dpu"]
 
 [ext_resource type="Script" path="res://scripts/Camera3DRaycast.gd" id="1_mh6lp"]
 [ext_resource type="Script" path="res://main.gd" id="1_pfgsa"]
@@ -6,11 +6,27 @@
 [ext_resource type="PackedScene" uid="uid://ctawanrj6ctl1" path="res://selector.blend" id="5_ldmuq"]
 [ext_resource type="Script" path="res://scripts/selector.gd" id="6_2kr1a"]
 [ext_resource type="AudioStream" uid="uid://c5gauq0rtas5g" path="res://sounds/hit0.wav" id="6_5h7wa"]
+[ext_resource type="AudioStream" uid="uid://bg13c737s4kuv" path="res://sounds/pipe0.wav" id="6_dbmcl"]
 [ext_resource type="AudioStream" uid="uid://camw3msujmtsb" path="res://sounds/hit1.wav" id="7_3hfii"]
+[ext_resource type="AudioStream" uid="uid://68b72m2aj123" path="res://sounds/pipe1.wav" id="7_jv2vr"]
 [ext_resource type="AudioStream" uid="uid://bspg1dg0snh2s" path="res://sounds/hit2.wav" id="8_dxg4q"]
+[ext_resource type="AudioStream" uid="uid://dk8y8srlf0eau" path="res://sounds/pipe2.wav" id="8_qu7nl"]
 [ext_resource type="AudioStream" uid="uid://darb1cidcjga1" path="res://sounds/hit3.wav" id="9_j0qio"]
+[ext_resource type="AudioStream" uid="uid://cf3d4ykpr3cpv" path="res://sounds/pipe3.wav" id="9_ksjev"]
 [ext_resource type="AudioStream" uid="uid://htrprtdxoqqs" path="res://sounds/hit4.wav" id="10_jlmv6"]
 [ext_resource type="AudioStream" uid="uid://de7kw1cqg3e3o" path="res://sounds/hit5.wav" id="11_fsuej"]
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_2abqg"]
+random_pitch = 1.05
+streams_count = 4
+stream_0/stream = ExtResource("6_dbmcl")
+stream_0/weight = 1.0
+stream_1/stream = ExtResource("7_jv2vr")
+stream_1/weight = 1.0
+stream_2/stream = ExtResource("8_qu7nl")
+stream_2/weight = 1.0
+stream_3/stream = ExtResource("9_ksjev")
+stream_3/weight = 1.0
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_7krq2"]
 random_pitch = 1.16
@@ -34,6 +50,27 @@ script = ExtResource("1_pfgsa")
 
 [node name="Grids" type="Node3D" parent="."]
 script = ExtResource("2_dnmq8")
+
+[node name="Selector" parent="." instance=ExtResource("5_ldmuq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.68302, 0.11311, -4.98854)
+script = ExtResource("6_2kr1a")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.707107, 0.353553, -0.612373, 0, 0.866026, 0.499999, 0.707107, -0.353553, 0.612373, -3.69945, 19.593, 35.803)
+projection = 1
+size = 25.839
+script = ExtResource("1_mh6lp")
+
+[node name="sounds" type="Node" parent="."]
+
+[node name="Pipe" type="AudioStreamPlayer" parent="sounds"]
+stream = SubResource("AudioStreamRandomizer_2abqg")
+max_polyphony = 2
+
+[node name="Scroll" type="AudioStreamPlayer" parent="sounds"]
+stream = SubResource("AudioStreamRandomizer_7krq2")
+volume_db = -9.811
+max_polyphony = 2
 
 [node name="lights" type="Node" parent="."]
 
@@ -92,18 +129,3 @@ light_color = Color(0.413096, 0.823102, 0.728515, 1)
 light_energy = 0.3
 shadow_enabled = true
 shadow_opacity = 0.95
-
-[node name="selector" parent="." instance=ExtResource("5_ldmuq")]
-transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 5.68302, 0.11311, -4.98854)
-script = ExtResource("6_2kr1a")
-
-[node name="ScrollSound" type="AudioStreamPlayer" parent="."]
-stream = SubResource("AudioStreamRandomizer_7krq2")
-volume_db = -9.811
-max_polyphony = 2
-
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.707107, 0.353553, -0.612373, 0, 0.866026, 0.499999, 0.707107, -0.353553, 0.612373, -3.69945, 19.593, 35.803)
-projection = 1
-size = 25.839
-script = ExtResource("1_mh6lp")
