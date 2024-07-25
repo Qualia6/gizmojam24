@@ -2,3 +2,6 @@
 .godot/
 .DS_Store
 /target/
+
+*.tmp
+*.blend1

@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://ng2vtnj0sau5"
-path="res://.godot/imported/ground.blend-783dcd1ea77fb7cab5325cb13758b1ac.scn"
+uid="uid://ctawanrj6ctl1"
+path="res://.godot/imported/selector.blend-d6176be5c6019100887d9b25898549fb.scn"
 
 [deps]
 
-source_file="res://ground.blend"
-dest_files=["res://.godot/imported/ground.blend-783dcd1ea77fb7cab5325cb13758b1ac.scn"]
+source_file="res://objects/selector.blend"
+dest_files=["res://.godot/imported/selector.blend-d6176be5c6019100887d9b25898549fb.scn"]
 
 [params]
 
