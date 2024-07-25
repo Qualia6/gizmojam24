@@ -52,14 +52,73 @@ script = ExtResource("1_pfgsa")
 script = ExtResource("2_dnmq8")
 
 [node name="Selector" parent="." instance=ExtResource("5_ldmuq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.68302, 0.11311, -4.98854)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.8797, 0.11311, -35.0204)
 script = ExtResource("6_2kr1a")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.707107, 0.353553, -0.612373, 0, 0.866026, 0.499999, 0.707107, -0.353553, 0.612373, -3.69945, 19.593, 35.803)
+transform = Transform3D(0.707107, 0.353553, -0.612372, 0, 0.866026, 0.5, 0.707107, -0.353553, 0.612372, -3.69945, 19.593, 35.803)
 projection = 1
-size = 25.839
+current = true
+size = 37.387
 script = ExtResource("1_mh6lp")
+
+[node name="lights" type="Node3D" parent="Camera3D"]
+transform = Transform3D(0.707107, 0, 0.707107, 0.353553, 0.866025, -0.353553, -0.612372, 0.5, 0.612372, -41.0324, -11.5712, -19.1441)
+
+[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="Camera3D/lights"]
+light_color = Color(1, 0.538616, 0.708084, 1)
+light_energy = 0.3
+shadow_enabled = true
+shadow_opacity = 0.95
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Camera3D/lights"]
+transform = Transform3D(0.600582, 0.74387, 0.293186, 0.162784, -0.472759, 0.866025, 0.782817, -0.472393, -0.405021, -2.9812, 0, -0.62918)
+light_color = Color(0.644375, 0.736789, 0.414118, 1)
+light_energy = 0.3
+shadow_enabled = true
+shadow_opacity = 0.95
+
+[node name="DirectionalLight3D5" type="DirectionalLight3D" parent="Camera3D/lights"]
+transform = Transform3D(0.301242, 0.945899, -0.120534, -0.35218, 0.227836, 0.907778, 0.886128, -0.231011, 0.40176, -5.893, 0.262679, -0.115971)
+light_color = Color(0.477381, 0.787837, 0.866659, 1)
+light_energy = 0.3
+shadow_enabled = true
+shadow_opacity = 0.95
+
+[node name="DirectionalLight3D3" type="DirectionalLight3D" parent="Camera3D/lights"]
+transform = Transform3D(-0.510962, -0.60693, 0.608731, 0.802334, -0.0825791, 0.591135, -0.308509, 0.790454, 0.529155, -5.2867, 0, -3.85546)
+light_color = Color(0.866323, 0.695207, 0.243233, 1)
+light_energy = 0.3
+shadow_enabled = true
+shadow_opacity = 0.95
+
+[node name="DirectionalLight3D6" type="DirectionalLight3D" parent="Camera3D/lights"]
+transform = Transform3D(0.726576, -0.341437, -0.596245, 0.342679, 0.932232, -0.116254, 0.595532, -0.119853, 0.794341, -0.803699, 0.214799, -1.8011)
+light_color = Color(1, 0.637881, 0.484619, 1)
+light_energy = 0.3
+shadow_enabled = true
+shadow_opacity = 0.95
+
+[node name="DirectionalLight3D7" type="DirectionalLight3D" parent="Camera3D/lights"]
+transform = Transform3D(-0.10369, 0.792937, 0.600416, 0.991888, 0.127064, 0.00349027, -0.0735234, 0.595908, -0.79968, -2.4353, 0.114937, 2.42985)
+light_color = Color(0.618992, 0.703612, 1, 1)
+light_energy = 0.3
+shadow_enabled = true
+shadow_opacity = 0.95
+
+[node name="DirectionalLight3D8" type="DirectionalLight3D" parent="Camera3D/lights"]
+transform = Transform3D(0.622642, 0.540571, -0.565774, 0.770661, -0.298288, 0.563122, 0.135644, -0.786643, -0.602323, -2.4931, 0.160327, -3.23614)
+light_color = Color(0.8476, 0.633197, 0.971399, 1)
+light_energy = 0.3
+shadow_enabled = true
+shadow_opacity = 0.95
+
+[node name="DirectionalLight3D4" type="DirectionalLight3D" parent="Camera3D/lights"]
+transform = Transform3D(-0.929119, 0.188454, 0.318155, 0.348726, 0.732732, 0.584375, -0.122994, 0.653903, -0.746514, -4.7176, 0.0291428, 2.66989)
+light_color = Color(0.413096, 0.823102, 0.728515, 1)
+light_energy = 0.3
+shadow_enabled = true
+shadow_opacity = 0.95
 
 [node name="sounds" type="Node" parent="."]
 
@@ -71,61 +130,3 @@ max_polyphony = 2
 stream = SubResource("AudioStreamRandomizer_7krq2")
 volume_db = -9.811
 max_polyphony = 2
-
-[node name="lights" type="Node" parent="."]
-
-[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.0524, -0.11311, -0.82694)
-light_color = Color(1, 0.538616, 0.708084, 1)
-light_energy = 0.3
-shadow_enabled = true
-shadow_opacity = 0.95
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="lights"]
-transform = Transform3D(0.600582, 0.74387, 0.293186, 0.162784, -0.472759, 0.866026, 0.782817, -0.472393, -0.405021, -28.0336, -0.11311, -1.45612)
-light_color = Color(0.644375, 0.736789, 0.414118, 1)
-light_energy = 0.3
-shadow_enabled = true
-shadow_opacity = 0.95
-
-[node name="DirectionalLight3D5" type="DirectionalLight3D" parent="lights"]
-transform = Transform3D(0.301242, 0.945899, -0.120534, -0.35218, 0.227836, 0.907778, 0.886128, -0.231011, 0.40176, -30.9454, 0.149569, -0.942911)
-light_color = Color(0.477381, 0.787837, 0.866659, 1)
-light_energy = 0.3
-shadow_enabled = true
-shadow_opacity = 0.95
-
-[node name="DirectionalLight3D3" type="DirectionalLight3D" parent="lights"]
-transform = Transform3D(-0.510962, -0.60693, 0.608732, 0.802334, -0.0825792, 0.591135, -0.308509, 0.790454, 0.529155, -30.3391, -0.11311, -12.2038)
-light_color = Color(0.866323, 0.695207, 0.243233, 1)
-light_energy = 0.3
-shadow_enabled = true
-shadow_opacity = 0.95
-
-[node name="DirectionalLight3D6" type="DirectionalLight3D" parent="lights"]
-transform = Transform3D(0.726577, -0.341437, -0.596245, 0.342679, 0.932232, -0.116254, 0.595532, -0.119853, 0.794341, -25.8561, 0.101689, -2.62804)
-light_color = Color(1, 0.637881, 0.484619, 1)
-light_energy = 0.3
-shadow_enabled = true
-shadow_opacity = 0.95
-
-[node name="DirectionalLight3D7" type="DirectionalLight3D" parent="lights"]
-transform = Transform3D(-0.10369, 0.792937, 0.600416, 0.991888, 0.127064, 0.00349028, -0.0735234, 0.595908, -0.79968, -27.4877, 0.00182724, 1.60291)
-light_color = Color(0.618992, 0.703612, 1, 1)
-light_energy = 0.3
-shadow_enabled = true
-shadow_opacity = 0.95
-
-[node name="DirectionalLight3D8" type="DirectionalLight3D" parent="lights"]
-transform = Transform3D(0.622642, 0.540571, -0.565774, 0.770661, -0.298288, 0.563122, 0.135644, -0.786643, -0.602323, -27.5455, 0.0472174, -4.06308)
-light_color = Color(0.8476, 0.633197, 0.971399, 1)
-light_energy = 0.3
-shadow_enabled = true
-shadow_opacity = 0.95
-
-[node name="DirectionalLight3D4" type="DirectionalLight3D" parent="lights"]
-transform = Transform3D(-0.929119, 0.188455, 0.318155, 0.348726, 0.732732, 0.584375, -0.122994, 0.653903, -0.746514, -29.77, -0.0839672, -9.50584)
-light_color = Color(0.413096, 0.823102, 0.728515, 1)
-light_energy = 0.3
-shadow_enabled = true
-shadow_opacity = 0.95

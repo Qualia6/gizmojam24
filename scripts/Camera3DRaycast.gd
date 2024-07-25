@@ -21,9 +21,12 @@ func shoot_ray() -> Result:
 		#return Result.error(0)
 	
 	return Result.ok(tile)
-#
-#func _process(delta):
-	#var result: Result = shoot_ray()
-	#var selector: Node3D = get_node("../selector")
-	#selector.set_goal(result)
- 
+
+
+var rotation_center = Vector3(30,10,30)
+var rotation_distance = 50
+
+func _process(delta):
+	const speed: float = TAU / 64
+	rotation.y += speed * delta
+	position = rotation_center + (transform.basis.z * rotation_distance)

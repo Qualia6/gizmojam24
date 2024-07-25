@@ -10,6 +10,8 @@ var jsSimulation
 func _ready():
 	jsSimulation = JavaScriptBridge.get_interface("Simulation")
 	$Grids.resetToSize(jsSimulation.x_size(), jsSimulation.y_size(), jsSimulation.z_size())
+	$Camera3D.rotation_center = Vector3(jsSimulation.x_size(), 10, jsSimulation.z_size())
+	$Camera3D.rotation_distance = sqrt(pow(jsSimulation.x_size(),2) + pow(jsSimulation.y_size(),2)) * 2
 	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

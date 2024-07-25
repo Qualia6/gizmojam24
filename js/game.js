@@ -118,28 +118,28 @@ function writeTrueQueued(i, queuedByte) {
 	dontQueue.setUint8(byteOffset, queuedByte | maskBit)
 }
 
+function typeHasFlag(type, flag) {
+	return (flags[type] & flag) !== 0
+}
+
 function hasFlag(i, flag) {
-	return (flags[types[i]] & flag) !== 0
+	return typeHasFlag(types[i], flag)
 }
 
 function changeBlock(i, whatNewType, updateEvenIfSameType, evenIfInvalid, dontSendUpdates, dontSendGraphicsUpdates) {
 	if (types[i] != whatNewType || updateEvenIfSameType) {
-		let previousType = types[i]
 		let valid = true
 		if (hasFlag(i, DECONSTRUCTOR_FLAG)) {
 			valid = deconstructorCallbacks[previousType](i)
 		}
 		if (valid) {
-			types[i] = whatNewType
-			if (hasFlag(i, CONSTRUCTOR_FLAG)) {
-				valid = constructorCallbacks[whatNewType](i)
-			}
-			if (valid || evenIfInvalid) {
-				if (!dontSendUpdates) sendAdjacentUpdates(i)
-				if (!dontSendGraphicsUpdates) updateDisplay(i)
+			if (typeHasFlag(whatNewType, CONSTRUCTOR_FLAG)) {
+				constructorCallbacks[whatNewType](i)
 			} else {
-				types[i] = previousType //if invalid - dont change the type
+				types[i] = whatNewType
 			}
+			if (!dontSendUpdates) sendAdjacentUpdates(i)
+			if (!dontSendGraphicsUpdates) updateDisplay(i)
 		}
 	}
 }
@@ -230,6 +230,37 @@ function dirIsEdgeAdjacent(dir) {
 
 function dirIsVertAdjacent(dir) {
 	return dir & 3 === 2 // 10
+}
+
+function dirFlip(dir) {
+	switch(dir) {
+		case dirPosX: return dirNegX
+		case dirPosZ: return dirNegZ
+		case dirNegX: return dirPosX
+		case dirNegZ: return dirPosZ
+		case dirPosY: return dirNegY
+		case dirNegY: return dirPosY
+		case dirPosXPosZPosY: return dirNegXNegZNegY
+		case dirNegXPosZPosY: return dirPosXNegZNegY
+		case dirNegXNegZPosY: return dirPosXPosZNegY
+		case dirPosXNegZPosY: return dirNegXPosZNegY
+		case dirPosXPosZNegY: return dirNegXNegZPosY
+		case dirNegXPosZNegY: return dirPosXNegZPosY
+		case dirNegXNegZNegY: return dirPosXPosZPosY
+		case dirPosXNegZNegY: return dirNegXPosZPosY
+		case dirPosXPosZ: return dirNegXNegZ
+		case dirNegXPosZ: return dirPosXNegZ
+		case dirNegXNegZ: return dirPosXPosZ
+		case dirPosXNegZ: return dirNegXPosZ
+		case dirPosXPosY: return dirNegXNegY
+		case dirPosZPosY: return dirNegZNegY
+		case dirNegXPosY: return dirPosXNegY
+		case dirNegZPosY: return dirPosZNegY
+		case dirPosXNegY: return dirNegXPosY
+		case dirPosZNegY: return dirNegZPosY
+		case dirNegXNegY: return dirPosXPosY
+		case dirNegZNegY: return dirPosZPosY
+	}
 }
 
 const dirPosX = 4 * 0
@@ -558,7 +589,7 @@ function tick() {
 
 	tickCells()
 
-	// fulfillUpdateQueue()
+	fulfillUpdateQueue()
 	// return tickLevel()
 }
 
@@ -651,7 +682,7 @@ function createLevel(data, tick, title, instructions) {
 
 function createType(id, display, constructor, update, tick, deconstructor) {
 	if (flags[id] !== undefined) {
-		throw "Tried to make two types with same id " + id
+		console.log("Overriding type " + id)
 	}
 	let flag = 0
 	displayCallbacks[id] = display
@@ -695,12 +726,10 @@ display is a callback that
 ===OPTIONAL=== (anything falsy can work as substitute)
 constructor is a callback that
 	is called when the block is created
-	types[i] is already modified for you
+	you need to modify types[i]
 	one recommended use is to set the initial values of data variables
 	passed i
-	should return true if it was successful
-		returning true does as you expect
-		return false prevent the block to actually being placed and change the type back
+	nothing to return
 update is a callback that
 	is called when a block adjacent to this block is changed (if the block during update phase, then it will be delayed to the next tick)
 	for stuff thats gonna be receiving an update like >75% of ticks, just use tick instead
@@ -798,8 +827,12 @@ class SandTool extends Tool {
 	getName() { return "Sand" }
 	tick() {
 		if (this.mousePressed) {
-			console.log(this.i)
-			changeBlock(this.i,2)
+			if (this.key) {
+				changeBlock(this.i,0)
+			} else {
+				changeBlock(this.i,3)
+				addUpdateToQueue(i,dirPosY)
+			}
 		}
 	}
 }
@@ -810,10 +843,39 @@ class PipeTool extends Tool {
 	getName() { return "Pipe" }
 	tick() { } // TODO
 }
+/*
+0	nothing
+1	end
+2	straight
+3	bi
+4	ace
+5	gay
+6	stone
+7	water4
+8	water2
+9	water3
+10	water1
+11	sand
+12	wood branch
+13	wood tip
+14	wood box
+15	leaves
+16	fire
+17	stiff sand
+18	stiff sand tall
 
+
+use this code in the console to figure out what is what:
+
+window.data0[0]++
+window.Simulation.updateDisplay(0)
+window.data0[0]
+
+*/
 createType(0,// air nothing
 	i => data0[i],
 	i => {
+		types[i] = 0
 		data0[i] = 0
 	}
 ) 
@@ -821,25 +883,91 @@ createType(1, // stone
 	i=> 6
 )
 createType(2, // sand
-	i=> 6,
+	i=> 11,
 	false,
 	false,
 	i=>{
-		if (isNotNegYEdge(i) && types[moveNegY(i)] == 0) {
-			changeBlock(moveNegY(i), 2)
-			changeBlock(i,1)
+		if (isNotNegYEdge(i)) {
+			let down = moveNegY(i)
+			if (types[down] == 0) {
+				changeBlock(down, 2)
+				changeBlock(i,0)
+			} else if (isNotNegXEdge(i) && types[moveNegX(down)] == 0) {
+				changeBlock(moveNegX(down), 2)
+				changeBlock(i,0)
+			} else if (isNotNegZEdge(i) && types[moveNegZ(down)] == 0) {
+				changeBlock(moveNegZ(down), 2)
+				changeBlock(i,0)
+			} else if (isNotPosXEdge(i) && types[movePosX(down)] == 0) {
+				changeBlock(movePosX(down), 2)
+				changeBlock(i,0)
+			} else if (isNotPosZEdge(i) && types[movePosZ(down)] == 0) {
+				changeBlock(movePosZ(down), 2)
+				changeBlock(i,0)
+			} else {
+				changeBlock(i,3)
+			}
+		} else {
+			changeBlock(i,3)
 		}
 	}
 )
-createType(3, // water
-	i=> 12 // 10 8 9 7
+createType(3, // stiff sand
+	i => {
+		if (isNotPosYEdge(i) && types[movePosY(i)] !== 0) {
+			return 18
+		} else {
+			return 17
+		}
+	},
+	i => {
+		if (isNotNegYEdge(i) && types[moveNegY(i)] == 0) {
+			changeBlock(i,2)
+		} else {
+			types[i] = 3
+		}
+	},
+	(i,direction) => {
+		if (isNotNegYEdge(i) && types[moveNegY(i)] == 0) {
+			changeBlock(i,2)
+		} else {
+			updateDisplay(i)
+		}
+	}
 )
-createType(4, // fire
-	i=> 4 // 16
-)
-createType(5, //branch
-	i=>14 //node: 14 tube: 12 tip: 13 leaf: 15
-)
+// createType(4, // water
+// 	i=> {
+// 		if (data0[i] > 191) {
+// 			return 7
+// 		} else if (data0[i] > 127) {
+// 			return 9
+// 		} else if (data0[i] > 63) {
+// 			return 8
+// 		} else {
+// 			return 10
+// 		}
+// 	},
+// 	i => {
+// 		if (types[i] == 4) {
+// 			data0[i] = Math.max(data0[i]+64,255)
+// 		} else {
+// 			data0[i] = 63
+// 			types[i] = 0
+// 		}
+// 	},
+// 	(i, direction) => {
+// 		if (!dirIsFaceAdjacent(direction)) {
+// 			return
+// 		}
+
+// 	}
+// )
+// createType(4, // fire
+// 	i=> 4 // 16
+// )
+// createType(5, //branch
+// 	i=>14 //node: 14 tube: 12 tip: 13 leaf: 15
+// )
 
 // const PIPE_EDGE_PX = createDisplay(0, 0, 0, 3)
 // const PIPE_EDGE_PZ = createDisplay(0, 0, 0, 3)
@@ -1108,7 +1236,8 @@ window.Simulation = {
 	saveToBase64,
 	loadFromBase64,
 	getTool,
-	tickCells
+	tickCells,
+	createType
 }
 
 
@@ -1117,3 +1246,4 @@ window.displayChangedQueue = displayChangedQueue
 window.display = display
 window.types = types
 window.flags = flags
+window.data0 = data0
