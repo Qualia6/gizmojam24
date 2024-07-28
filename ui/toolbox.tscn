@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://dj4452gbcdyba"]
+
+[node name="Toolbox" type="CanvasLayer"]
+
+[node name="HBox_Toolbox" type="HBoxContainer" parent="."]
+texture_filter = 1
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 10.0
+offset_bottom = 10.0

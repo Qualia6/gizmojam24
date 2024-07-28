@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://bnapxx2qd8dpu"]
+[gd_scene load_steps=19 format=3 uid="uid://bnapxx2qd8dpu"]
 
 [ext_resource type="Script" path="res://scripts/Camera3DRaycast.gd" id="1_mh6lp"]
 [ext_resource type="Script" path="res://main.gd" id="1_pfgsa"]
@@ -15,34 +15,25 @@
 [ext_resource type="AudioStream" uid="uid://cf3d4ykpr3cpv" path="res://sounds/pipe3.wav" id="9_ksjev"]
 [ext_resource type="AudioStream" uid="uid://htrprtdxoqqs" path="res://sounds/hit4.wav" id="10_jlmv6"]
 [ext_resource type="AudioStream" uid="uid://de7kw1cqg3e3o" path="res://sounds/hit5.wav" id="11_fsuej"]
+[ext_resource type="PackedScene" uid="uid://cyijkjhmbkota" path="res://ui.tscn" id="16_f043f"]
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_2abqg"]
 random_pitch = 1.05
 streams_count = 4
 stream_0/stream = ExtResource("6_dbmcl")
-stream_0/weight = 1.0
 stream_1/stream = ExtResource("7_jv2vr")
-stream_1/weight = 1.0
 stream_2/stream = ExtResource("8_qu7nl")
-stream_2/weight = 1.0
 stream_3/stream = ExtResource("9_ksjev")
-stream_3/weight = 1.0
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_7krq2"]
 random_pitch = 1.16
 streams_count = 6
 stream_0/stream = ExtResource("6_5h7wa")
-stream_0/weight = 1.0
 stream_1/stream = ExtResource("7_3hfii")
-stream_1/weight = 1.0
 stream_2/stream = ExtResource("8_dxg4q")
-stream_2/weight = 1.0
 stream_3/stream = ExtResource("9_j0qio")
-stream_3/weight = 1.0
 stream_4/stream = ExtResource("10_jlmv6")
-stream_4/weight = 1.0
 stream_5/stream = ExtResource("11_fsuej")
-stream_5/weight = 1.0
 
 [node name="Root" type="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0289803, -0.11311, 0.0166359)
@@ -130,3 +121,5 @@ max_polyphony = 2
 stream = SubResource("AudioStreamRandomizer_7krq2")
 volume_db = -9.811
 max_polyphony = 2
+
+[node name="HUD" parent="." instance=ExtResource("16_f043f")]
